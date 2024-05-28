@@ -77,10 +77,12 @@ export function AddApp(props) {
                             onChange={(e) => setForm({...form, gender: e.target.value})}>
                         </Form.Control>
                     </Form.Group>
+
+                  <button type="submit" className="btn btn-primary">Submit</button>
                     
                 </form>
 
-                <button type="submit" className="btn btn-primary">Submit</button>
+                
                 
             </div>
                 
