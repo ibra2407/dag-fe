@@ -25,7 +25,7 @@ export function AppDetails() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/api/users");
+                const response = await axios.get("http://3.0.49.86:8000/api/users");
                 const userData = response.data;
                 console.log(userData.data);
                 setUsers(userData.data);
