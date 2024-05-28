@@ -24,7 +24,7 @@ export function AddApp(props) {
                 return;
             }
             console.log(form);
-            const response = await axios.post("http://localhost:8000/api/users", form);
+            const response = await axios.post("http://3.0.49.86:8000/api/users", form);
             console.log(response);
             setFormSubmitted(true);
         }
