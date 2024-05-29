@@ -24,7 +24,7 @@ export function AddApp(props) {
                 return;
             }
             console.log(form);
-            const response = await axios.post("http://3.0.49.86:8000/api/users", form);
+            const response = await axios.post("http://localhost:8000/api/users", form);
             console.log(response);
             setFormSubmitted(true);
         }
@@ -32,6 +32,22 @@ export function AddApp(props) {
             console.log(err);
         }
         
+    }
+
+    const handleDelete = async (e) => {
+        e.preventDefault();
+        try {
+            if (!form.id) {
+                alert("Please provide the ID of the user to delete");
+                return;
+            }
+            console.log(form);
+            const response = await axios.delete(`http://localhost:8000/api/users/${form.id}`);
+            console.log(response);
+            setFormSubmitted(true);
+        } catch (err) {
+            console.log(err);
+        }
     }
 
 
@@ -77,13 +93,17 @@ export function AddApp(props) {
                             onChange={(e) => setForm({...form, gender: e.target.value})}>
                         </Form.Control>
                     </Form.Group>
-
+                {/* submit button needs to be inside form div */}
                   <button type="submit" className="btn btn-primary">Submit</button>
                     
                 </form>
+                
+                <a>Delete User by ID</a>
+            
+                <form onSubmit={handleDelete} style={{ marginTop: "20px" }}>
+                    <button type="submit" className="btn btn-danger">Delete</button>
+                </form>
 
-                
-                
             </div>
                 
         </>

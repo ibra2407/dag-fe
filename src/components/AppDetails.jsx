@@ -25,7 +25,8 @@ export function AppDetails() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://3.0.49.86:8000/api/users");
+                // this is routes.js READ ALL USERS
+                const response = await axios.get("http://localhost:8000/api/users");
                 const userData = response.data;
                 console.log(userData.data);
                 setUsers(userData.data);
@@ -38,22 +39,22 @@ export function AppDetails() {
         fetchData();
     }, [formSubmitted]);
 
-    // displays users on the webpage; maps & prints out the whole database
-    function listUsers() {
-        return users.map((user) => {
-            return (
-                <div key={user.id} >
-                    <h3>ID: {user.id}</h3>
-                    <h3>Name: {user.name}</h3>
-                    <h3>Gender: {user.gender}</h3>
-                </div>)
-        });
-    }   
+    // displays users on the webpage; maps & prints out the whole database (initial list; now in a component)
+    // function listUsers() {
+    //     return users.map((user) => {
+    //         return (
+    //             <div key={user.id} >
+    //                 <h3>ID: {user.id}</h3>
+    //                 <h3>Name: {user.name}</h3>
+    //                 <h3>Gender: {user.gender}</h3>
+    //             </div>)
+    //     });
+    // }   
 
     return (
         <>
             {/* returns both the database view + adding app component */}
-            <Box sx={{ height: 400, width: '100%', backgroundColor:'#ffffff' }}>
+            <Box sx={{ height: 400, width: '100%', backgroundColor:'#ffffff', borderRadius: 1 }}>
                 <DataGrid
                     rows={users}
                     columns={columns}
