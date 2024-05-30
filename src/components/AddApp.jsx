@@ -13,7 +13,7 @@ export function AddApp(props) {
         name:"",
         gender:"",
     });
-
+    const [image, setImage] = useState(null);
     const setFormSubmitted = props.setFormSubmitted;
 
     const handleSubmit = async (e) => {   
@@ -45,6 +45,28 @@ export function AddApp(props) {
             const response = await axios.delete(`http://localhost:8000/api/users/${form.id}`);
             console.log(response);
             setFormSubmitted(true);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const handleImageUpload = async (e) => {
+        e.preventDefault();
+        if (!image) {
+            alert("Please select an image to upload");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', image);
+
+        try {
+            const response = await axios.post("http://localhost:8000/api/upload", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log(response.data);
         } catch (err) {
             console.log(err);
         }
@@ -102,6 +124,19 @@ export function AddApp(props) {
             
                 <form onSubmit={handleDelete} style={{ marginTop: "20px" }}>
                     <button type="submit" className="btn btn-danger">Delete</button>
+                </form>
+
+                <a>Upload Image</a>
+
+                <form onSubmit={handleImageUpload} style={{ marginTop: "20px" }}>
+                    <Form.Group>
+                        <Form.Label>Image:</Form.Label>
+                        <Form.Control
+                            type="file"
+                            onChange={(e) => setImage(e.target.files[0])}>
+                        </Form.Control>
+                    </Form.Group>
+                    <button type="submit" className="btn btn-primary">Upload</button>
                 </form>
 
             </div>
