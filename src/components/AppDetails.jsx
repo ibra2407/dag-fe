@@ -17,25 +17,13 @@ export function AppDetails() {
 
     const [s3Objects, setS3Objects] = useState([]);
 
+    const [key, setKey] = useState('');
+
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 90 },
         { field: 'name', headerName: 'Name', width: 150 },
         { field:'gender', headerName:'Gender', width: 150}
-    ];
-
-    const s3Columns = [
-        { field: 'Key', headerName: 'Key', width: 250 },
-        { field: 'LastModified', headerName: 'Last Modified', width: 200 },
-        { field: 'Size', headerName: 'Size', width: 100 },
-        {
-            field: 'url',
-            headerName: 'URL',
-            width: 300,
-            renderCell: (params) => (
-                <a href={params.value} target="_blank" rel="noopener noreferrer">View</a>
-            )
-        }
     ];
 
     // passes in data from API
@@ -56,32 +44,25 @@ export function AppDetails() {
         fetchData();
     }, [formSubmitted]);
 
-    // Fetch S3 objects data from API
-    useEffect(() => {
-        const fetchS3Objects = async () => {
-            try {
-                const response = await axios.get("http://localhost:8000/api/list");
-                const s3Data = response.data;
-                console.log(s3Data.data);
-                setS3Objects(s3Data.data);
-            } catch (err) {
-                console.log(err);
-            }
-        };
-        fetchS3Objects();
-    }, []);
+    // Fetch S3 object data from API using the key
+    const fetchS3Object = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8000/api/get/${key}`);
+            const s3Data = response.data;
+            console.log(s3Data);
+            setS3Objects(s3Data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
-    // displays users on the webpage; maps & prints out the whole database (initial list; now in a component)
-    // function listUsers() {
-    //     return users.map((user) => {
-    //         return (
-    //             <div key={user.id} >
-    //                 <h3>ID: {user.id}</h3>
-    //                 <h3>Name: {user.name}</h3>
-    //                 <h3>Gender: {user.gender}</h3>
-    //             </div>)
-    //     });
-    // }   
+    const handleInputChange = (e) => {
+        setKey(e.target.value);
+    };
+
+    const handleFetchClick = () => {
+        fetchS3Object();
+    };
 
     return (
         <>
@@ -92,28 +73,37 @@ export function AppDetails() {
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
-                    //checkboxSelection
                 />
             </Box>
              
             {/* displays the user form underneath */}
             <br/>
             <AddApp setFormSubmitted={setFormSubmitted}/>
-
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}> Images and Videos here:
-                {s3Objects.map((obj, index) => (
-                    <div key={index} style={{ margin: '10px' }}>
-                        {obj.url.endsWith('.mp4') ? (
-                            <video width="320" height="240" controls>
-                                <source src={obj.url} type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                        ) : (
-                            <img src={obj.url} alt={obj.Key} style={{ maxWidth: '320px', maxHeight: '240px' }} />
-                        )}
-                    </div>
-                ))}
+    
+            {/* Form to enter the S3 object key */}
+            <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+                <input
+                    type="text"
+                    placeholder="Enter S3 Object Key"
+                    value={key}
+                    onChange={handleInputChange}
+                    style={{ width: '100%', padding: '10px', fontSize: '16px' }}
+                />
+                <button
+                    onClick={handleFetchClick}
+                    style={{ marginTop: '10px', padding: '10px 20px', fontSize: '16px' }}
+                >
+                    Fetch S3 Object
+                </button>
             </div>
+    
+            {/* Display S3 objects JSON */}
+            {s3Objects && (
+                <div style={{ width: '100%', backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '4px', marginTop: '20px' }}>
+                    <pre>{JSON.stringify(s3Objects, null, 2)}</pre>
+                </div>
+            )}
         </>
     );
+    
 }
