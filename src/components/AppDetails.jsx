@@ -45,7 +45,7 @@ export function AppDetails() {
     }, [formSubmitted]);
 
     // Fetch S3 object data from API using the key
-    const fetchS3Object = async () => {
+    const fetchOneS3Object = async () => {
         try {
             const response = await axios.get(`http://localhost:8000/api/get/${key}`);
             const s3Data = response.data;
@@ -61,7 +61,7 @@ export function AppDetails() {
     };
 
     const handleFetchClick = () => {
-        fetchS3Object();
+        fetchOneS3Object();
     };
 
     return (
@@ -100,7 +100,15 @@ export function AppDetails() {
             {/* Display S3 objects JSON */}
             {s3Objects && (
                 <div style={{ width: '100%', backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '4px', marginTop: '20px' }}>
-                    <pre>{JSON.stringify(s3Objects, null, 2)}</pre>
+                    {s3Objects.url ? (
+                        s3Objects.url.endsWith('.mp4') ? (
+                            <video src={s3Objects.url} controls loop style={{ width: '100%', height: 'auto', borderRadius: '4px' }} />
+                        ) : (
+                            <img src={s3Objects.url} alt="S3 Object" style={{ width: '100%', height: 'auto', borderRadius: '4px' }} />
+                        )
+                    ) : (
+                        <pre>{JSON.stringify(s3Objects, null, 2)}</pre>
+                    )}
                 </div>
             )}
         </>
