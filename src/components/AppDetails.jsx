@@ -47,7 +47,7 @@ export function AppDetails() {
     // Fetch S3 object data from API using the key
     const fetchOneS3Object = async () => {
         try {
-            const response = await axios.get(`http://localhost:8000/api/get/${key}`);
+            const response = await axios.get(`http://localhost:8000/api/s3/get/${key}`);
             const s3Data = response.data;
             console.log(s3Data);
             setS3Objects(s3Data);
