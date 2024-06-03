@@ -12,27 +12,50 @@ export function AddApp(props) {
         id:"",
         name:"",
         gender:"",
+        imageURL:""
     });
     const [image, setImage] = useState(null);
     const setFormSubmitted = props.setFormSubmitted;
 
-    const handleSubmit = async (e) => {   
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            if (!form.id || !form.name || !form.gender) {
-                alert("Please fill out all fields");
-                return;
-            }
-            console.log(form);
-            const response = await axios.post("http://localhost:8000/api/users", form);
-            console.log(response);
-            setFormSubmitted(true);
+
+        if (!form.id || !form.name || !form.gender) {
+            alert("Please fill out all fields");
+            return;
         }
-        catch (err) {
+
+        if (!image) {
+            alert("Please select an image to upload");
+            return;
+        }
+
+        // Image upload process
+        const formData = new FormData();
+        formData.append('image', image);
+
+        try {
+            const uploadResponse = await axios.post("http://localhost:8000/api/s3/upload", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            if (uploadResponse.data.success) {
+                const imageUrl = uploadResponse.data.url;
+                const formDataWithImage = { ...form, imageURL: imageUrl };
+
+                // Submit the form with the image URL
+                const response = await axios.post("http://localhost:8000/api/users", formDataWithImage);
+                console.log(response);
+                setFormSubmitted(true);
+            } else {
+                alert("Image upload failed");
+            }
+        } catch (err) {
             console.log(err);
         }
-        
-    }
+    };
 
     const handleDelete = async (e) => {
         e.preventDefault();
@@ -50,27 +73,27 @@ export function AddApp(props) {
         }
     }
 
-    const handleImageUpload = async (e) => {
-        e.preventDefault();
-        if (!image) {
-            alert("Please select an image to upload");
-            return;
-        }
+    // const handleImageUpload = async (e) => {
+    //     e.preventDefault();
+    //     if (!image) {
+    //         alert("Please select an image to upload");
+    //         return;
+    //     }
 
-        const formData = new FormData();
-        formData.append('image', image);
+    //     const formData = new FormData();
+    //     formData.append('image', image);
 
-        try {
-            const response = await axios.post("http://localhost:8000/api/upload", formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            console.log(response.data);
-        } catch (err) {
-            console.log(err);
-        }
-    }
+    //     try {
+    //         const response = await axios.post("http://localhost:8000/api/upload", formData, {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data'
+    //             }
+    //         });
+    //         console.log(response.data);
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // }
 
 
     return (
@@ -115,6 +138,15 @@ export function AddApp(props) {
                             onChange={(e) => setForm({...form, gender: e.target.value})}>
                         </Form.Control>
                     </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>Image:</Form.Label>
+                        <Form.Control
+                            type="file"
+                            onChange={(e) => setImage(e.target.files[0])}>
+                        </Form.Control>
+                    </Form.Group>
+
                 {/* submit button needs to be inside form div */}
                   <button type="submit" className="btn btn-primary">Submit</button>
                     
@@ -126,7 +158,7 @@ export function AddApp(props) {
                     <button type="submit" className="btn btn-danger">Delete</button>
                 </form>
 
-                <a>Upload Image</a>
+                {/* <a>Upload Image</a>
 
                 <form onSubmit={handleImageUpload} style={{ marginTop: "20px" }}>
                     <Form.Group>
@@ -137,7 +169,7 @@ export function AddApp(props) {
                         </Form.Control>
                     </Form.Group>
                     <button type="submit" className="btn btn-primary">Upload</button>
-                </form>
+                </form> */}
 
             </div>
                 

@@ -21,10 +21,11 @@ export function AppDetails() {
 
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 90 },
-        { field: 'name', headerName: 'Name', width: 150 },
-        { field:'gender', headerName:'Gender', width: 150}
-    ];
+        { field: 'id', headerName: 'ID', width: 50 },
+        { field: 'name', headerName: 'Name', width: 50 },
+        { field:'gender', headerName:'Gender', width: 50},
+        { field:'imageURL', headerName:'URL', width: 600}
+    ]
 
     // passes in data from API
     useEffect(() => {
