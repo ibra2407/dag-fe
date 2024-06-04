@@ -21,7 +21,6 @@ export function AppDetails() {
 
     const [key, setKey] = useState('');
 
-
     const columns = [
         { field: 'id', headerName: 'ID', width: 90 },
         { field: 'AppIcon', headerName: 'AppIcon', width: 150 }
@@ -57,17 +56,18 @@ export function AppDetails() {
         }
     };
 
+    const fetchS3Objects = async () => {
+        try {
+            const response = await axios.get("http://localhost:8000/s3/list");
+            const s3Data = response.data;
+            setS3Objects(s3Data.data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     // Fetch S3 objects data from API
     useEffect(() => {
-        const fetchS3Objects = async () => {
-            try {
-                const response = await axios.get("http://localhost:8000/s3/list");
-                const s3Data = response.data;
-                setS3Objects(s3Data.data);
-            } catch (err) {
-                console.log(err);
-            }
-        };
         fetchS3Objects();
     }, []);
 
@@ -77,6 +77,16 @@ export function AppDetails() {
 
     const handleFetchClick = () => {
         fetchS3Object();
+        fetchS3Objects();
+    };
+
+    const deleteImage = async (key) => {
+        try {
+            await axios.delete(`http://localhost:8000/s3/delete/${key}`);
+            fetchS3Objects();
+        } catch (error) {
+            console.error("Error deleting image:", error);
+        }
     };
 
     return (
@@ -97,6 +107,7 @@ export function AppDetails() {
     
             {/* Form to enter the S3 object key */}
             <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+
                 <input
                     type="text"
                     placeholder="Enter S3 Object Key"
@@ -104,12 +115,11 @@ export function AppDetails() {
                     onChange={handleInputChange}
                     style={{ width: '100%', padding: '10px', fontSize: '16px' }}
                 />
-                <button
-                    onClick={handleFetchClick}
-                    style={{ marginTop: '10px', padding: '10px 20px', fontSize: '16px' }}
-                >
-                    Fetch S3 Object
-                </button>
+
+                <button onClick={handleFetchClick}> Fetch S3 Object by Tag </button>
+
+                <button onClick={() => deleteImage(key)}> Delete Image by Tag </button>
+
             </div>
     
             {/* Display S3 objects JSON */}
@@ -119,18 +129,29 @@ export function AppDetails() {
                 </div>
             )}
 
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}> Images and Videos here:
-                {s3Objects.map((obj, index) => (
-                    <div key={index} style={{ margin: '10px' }}>
-                        {obj.Key.endsWith('.mp4') ? (
-                            <video width="900" height="600" autoPlay muted loop>
-                                <source src={obj.url} alt={obj.Key} type="video/mp4" />
-                            </video>
-                        ) : (
-                            <img src={obj.url} alt={obj.Key} style={{ maxWidth: '900px', maxHeight: '600px' }} />
-                        )}
-                    </div>
-                ))}
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                Images and Videos here:
+                { Array.isArray(s3Objects) && s3Objects.length > 0 ? (
+                    s3Objects.map((obj, index) => (
+                        <div key={index} style={{ margin: '10px' }}>
+                            {obj.Key.endsWith('.mp4') ? (
+                                <div>
+                                    <video width="900" height="600" autoPlay muted loop>
+                                        <source src={obj.url} alt={obj.Key} type="video/mp4" />
+                                    </video>
+                                    <button onClick={() => deleteImage(obj.Key)}>Delete</button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <img src={obj.url} alt={obj.Key} style={{ maxWidth: '900px', maxHeight: '600px' }} />
+                                    <button onClick={() => deleteImage(obj.Key)}>Delete</button>
+                                </div>
+                            )}
+                        </div>
+                    ))
+                ) : (
+                    <p>No images or videos available.</p>
+                )}
             </div>
         </>
     );
