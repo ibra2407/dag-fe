@@ -10,8 +10,7 @@ export function AddApp(props) {
 
     const [form, setForm] = useState({
         id:"",
-        name:"",
-        gender:"",
+        AppIcon:""
     });
     const [image, setImage] = useState(null);
     const setFormSubmitted = props.setFormSubmitted;
@@ -19,7 +18,7 @@ export function AddApp(props) {
     const handleSubmit = async (e) => {   
         e.preventDefault();
         try {
-            if (!form.id || !form.name || !form.gender) {
+            if (!form.id) {
                 alert("Please fill out all fields");
                 return;
             }
@@ -31,7 +30,6 @@ export function AddApp(props) {
         catch (err) {
             console.log(err);
         }
-        
     }
 
     const handleDelete = async (e) => {
@@ -91,33 +89,10 @@ export function AddApp(props) {
                             value={form.id}
                             onChange={(e) => setForm({...form, id: e.target.value})}>
                         </Form.Control>
-
                     </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Name:</Form.Label>
-                        <Form.Control
-                            required
-                            type="text"
-                            placeholder="name"
-                            value={form.name}
-                            onChange={(e) => setForm({...form, name: e.target.value})}>
-                        </Form.Control>
-                        
-                    </Form.Group>
-
-                    <Form.Group>
-                        <Form.Label>Gender:</Form.Label>
-                        <Form.Control
-                            required
-                            type="text"
-                            placeholder="gender"
-                            value={form.gender}
-                            onChange={(e) => setForm({...form, gender: e.target.value})}>
-                        </Form.Control>
-                    </Form.Group>
+                    
                 {/* submit button needs to be inside form div */}
                   <button type="submit" className="btn btn-primary">Submit</button>
-                    
                 </form>
                 
                 <a>Delete User by ID</a>
@@ -138,6 +113,8 @@ export function AddApp(props) {
                     </Form.Group>
                     <button type="submit" className="btn btn-primary">Upload</button>
                 </form>
+
+                
 
             </div>
                 
