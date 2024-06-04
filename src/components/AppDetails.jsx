@@ -32,7 +32,7 @@ export function AppDetails() {
         const fetchData = async () => {
             try {
                 // this is routes.js READ ALL USERS
-                const response = await axios.get("http://localhost:8000/api/users");
+                const response = await axios.get("http://localhost:8000/db/users");
                 const userData = response.data;
                 console.log(userData.data);
                 setUsers(userData.data);
@@ -48,7 +48,7 @@ export function AppDetails() {
     // Fetch S3 object data from API using the key
     const fetchS3Object = async () => {
         try {
-            const response = await axios.get(`http://localhost:8000/api/get/${key}`);
+            const response = await axios.get(`http://localhost:8000/s3/get/${key}`);
             const s3Data = response.data;
             console.log(s3Data);
             setS3Object(s3Data);
@@ -61,7 +61,7 @@ export function AppDetails() {
     useEffect(() => {
         const fetchS3Objects = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/api/list");
+                const response = await axios.get("http://localhost:8000/s3/list");
                 const s3Data = response.data;
                 setS3Objects(s3Data.data);
             } catch (err) {
@@ -125,7 +125,6 @@ export function AppDetails() {
                         {obj.Key.endsWith('.mp4') ? (
                             <video width="900" height="600" autoPlay muted loop>
                                 <source src={obj.url} alt={obj.Key} type="video/mp4" />
-
                             </video>
                         ) : (
                             <img src={obj.url} alt={obj.Key} style={{ maxWidth: '900px', maxHeight: '600px' }} />

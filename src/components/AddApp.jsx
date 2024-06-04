@@ -23,7 +23,7 @@ export function AddApp(props) {
                 return;
             }
             console.log(form);
-            const response = await axios.post("http://localhost:8000/api/users", form);
+            const response = await axios.post("http://localhost:8000/db/users", form);
             console.log(response);
             setFormSubmitted(true);
         }
@@ -40,7 +40,7 @@ export function AddApp(props) {
                 return;
             }
             console.log(form);
-            const response = await axios.delete(`http://localhost:8000/api/users/${form.id}`);
+            const response = await axios.delete(`http://localhost:8000/db/users/${form.id}`);
             console.log(response);
             setFormSubmitted(true);
         } catch (err) {
@@ -59,7 +59,7 @@ export function AddApp(props) {
         formData.append('image', image);
 
         try {
-            const response = await axios.post("http://localhost:8000/api/upload", formData, {
+            const response = await axios.post("http://localhost:8000/s3/upload", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
