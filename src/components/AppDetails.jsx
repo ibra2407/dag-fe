@@ -21,11 +21,10 @@ export function AppDetails() {
 
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 50 },
-        { field: 'name', headerName: 'Name', width: 50 },
-        { field:'gender', headerName:'Gender', width: 50},
-        { field:'imageURL', headerName:'URL', width: 600}
-    ]
+        { field: 'id', headerName: 'ID', width: 90 },
+        { field: 'name', headerName: 'Name', width: 150 },
+        { field:'gender', headerName:'Gender', width: 150}
+    ];
 
     // passes in data from API
     useEffect(() => {
@@ -46,9 +45,9 @@ export function AppDetails() {
     }, [formSubmitted]);
 
     // Fetch S3 object data from API using the key
-    const fetchOneS3Object = async () => {
+    const fetchS3Object = async () => {
         try {
-            const response = await axios.get(`http://localhost:8000/api/s3/get/${key}`);
+            const response = await axios.get(`http://localhost:8000/api/get/${key}`);
             const s3Data = response.data;
             console.log(s3Data);
             setS3Objects(s3Data);
@@ -62,7 +61,7 @@ export function AppDetails() {
     };
 
     const handleFetchClick = () => {
-        fetchOneS3Object();
+        fetchS3Object();
     };
 
     return (
@@ -101,15 +100,7 @@ export function AppDetails() {
             {/* Display S3 objects JSON */}
             {s3Objects && (
                 <div style={{ width: '100%', backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '4px', marginTop: '20px' }}>
-                    {s3Objects.url ? (
-                        s3Objects.url.endsWith('.mp4') ? (
-                            <video src={s3Objects.url} controls loop style={{ width: '100%', height: 'auto', borderRadius: '4px' }} />
-                        ) : (
-                            <img src={s3Objects.url} alt="S3 Object" style={{ width: '100%', height: 'auto', borderRadius: '4px' }} />
-                        )
-                    ) : (
-                        <pre>{JSON.stringify(s3Objects, null, 2)}</pre>
-                    )}
+                    <pre>{JSON.stringify(s3Objects, null, 2)}</pre>
                 </div>
             )}
         </>
