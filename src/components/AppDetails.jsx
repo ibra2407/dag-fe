@@ -122,13 +122,13 @@ export function AppDetails() {
             <div style={{ display: 'flex', flexWrap: 'wrap' }}> Images and Videos here:
                 {s3Objects.map((obj, index) => (
                     <div key={index} style={{ margin: '10px' }}>
-                        {obj.url.endsWith('.mp4') ? (
-                            <video width="320" height="240" controls>
-                                <source src={obj.url} type="video/mp4" />
-                                Your browser does not support the video tag.
+                        {obj.Key.endsWith('.mp4') ? (
+                            <video width="900" height="600" autoPlay muted loop>
+                                <source src={obj.url} alt={obj.Key} type="video/mp4" />
+
                             </video>
                         ) : (
-                            <img src={obj.url} alt={obj.Key} style={{ maxWidth: '320px', maxHeight: '240px' }} />
+                            <img src={obj.url} alt={obj.Key} style={{ maxWidth: '900px', maxHeight: '600px' }} />
                         )}
                     </div>
                 ))}
